@@ -1,2 +1,3 @@
 # memory-game
-Classic memory game using randomly generated colors.
+Classic memory game using semi-ordered, randomly generated colors.
+Edits to satisy the github intro.
