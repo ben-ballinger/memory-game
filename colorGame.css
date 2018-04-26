@@ -1,0 +1,41 @@
+body {
+	margin: 70px 0px 0px 0px;
+	background: #232323;
+}
+/*****************************************************/
+.containerBottom {
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+.small {
+	width: 30%;
+	padding-bottom: 30%;
+	margin: 1.65%;
+	background-color: blue;
+	border-radius: 15%;
+	float: left;
+}
+
+.squareMdLayout {
+	width: 22.5%;
+	padding-bottom: 22.5%;
+	margin: 1.2375%;
+	background-color: blue;
+	border-radius: 15%;
+	float: left;
+}
+
+.squareLgLayout {
+	width: 15%;
+	padding-bottom: 15%;
+	margin: 0.825%;
+	background-color: blue;
+	border-radius: 15%;
+	float: left;
+}
+
+.squareBackground {
+	background: url("background-img.jpg");
+}
+/*****************************************************/
