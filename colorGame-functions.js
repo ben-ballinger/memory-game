@@ -1,269 +1,248 @@
 
-// change difficulty when selected
-// ***********************************************************
 
-function difficultyChange() {
-	easy.addEventListener("click", function(){
-		colorNumUpdateDiff.call(this);
-	})
+function init() {
+	// allows time for squareCover to render so colors not briefly shown.
+	setTimeout(() => {
+		addSquareLayout.call(squareRef[boardSizeState], `${boardSizeState}Layout`);
+	}, 10);
+	addSquareCover.call(squareRef[boardSizeState]);
 
-	moderate.addEventListener("click", function(){
-		colorNumUpdateDiff.call(this);
-	})
+	//add turn counter to 
+	turnRefLayout[boardSizeState].classList.add(`${boardSizeState}TurnLayout`);
 
-	hard.addEventListener("click", function(){
-		colorNumUpdateDiff.call(this);
-	})
+	// set previous variables so that they can be accessed to change classes when board size is changed.
+	previousBoardSizeState = boardSizeState;
+	previousBoardSizeLayout = `${boardSizeState}Layout`;
+	
+	colorSquare();
+	colorMatch();
 }
 
+function reinit() {
+	count = 0;
+	turnRef[boardSizeState].textContent = '';
+	addSquareCover.call(squareRef[boardSizeState]);
 
+	colorSquare();
+	colorMatch();
+}
 
-function colorNumUpdateDiff() {
+// event listener functions
+// ***********************************************************
+function difficultyChange() {
+	// change these variables to new difficulty selection
 	difficultyState = this.textContent.toLowerCase();
 	colorNum = colorNumRef[boardSizeState][difficultyState];
-	randomColorArr = [];
+	addSquareCover.call(squareRef[boardSizeState]);
+
+	// reset turn counter
+	count = 0;
+	turnRef[boardSizeState].textContent = '';
+
+	// set colors for game
 	colorSquare();
 }
 
-// ***********************************************************
-
-
-
-
-// change board size when selected
-// ***********************************************************
-
 function boardSizeChange() {
-	boardSizeSmall();
-	boardSizeMedium();
-	boardSizeLarge();
-}
-
-// ===========================================================
-function boardSizeSmall() {
-	small.addEventListener("click", function(){
-		removeSquareLayoutAll();
-		removeSquareBackgroundAll();
-		addSquareLayout.call(squareSmall, "squareSmLayout");
-		// addSquareBackground.call(squareSmall);
-		colorNumUpdateBSize.call(this);
-		randomColorArr = [];
-		numSet();
-		colorSquare();
-		colorMatch();
-	})
-}
-
-function boardSizeMedium() {
-	medium.addEventListener("click", function(){
-		removeSquareLayoutAll();
-		removeSquareBackgroundAll();
-		addSquareLayout.call(squareMedium, "squareMdLayout");
-		// addSquareBackground.call(squareMedium);
-		colorNumUpdateBSize.call(this);
-		randomColorArr = [];
-		numSet();
-		colorSquare();
-		colorMatch();
-	})
-}
-
-function boardSizeLarge() {
-	large.addEventListener("click", function(){
-		removeSquareLayoutAll();
-		removeSquareBackgroundAll();
-		addSquareLayout.call(squareLarge, "squareLgLayout");
-		// addSquareBackground.call(squareLarge);
-		colorNumUpdateBSize.call(this);
-		randomColorArr = [];
-		numSet();
-		colorSquare();
-		colorMatch();
-	})
-}
-
-// sets the colorNum and squareNum to what user selected
-function numSet(){
-	colorNum = colorNumRef[boardSizeState][difficultyState];
-	squareNum = boardSizeRef[boardSizeState];
-}
-// ===========================================================
-function colorNumUpdateBSize() {
+	// refresh these variables to use later in function
 	boardSizeState = this.textContent.toLowerCase();
 	colorNum = colorNumRef[boardSizeState][difficultyState];
+	squareNum = boardSizeRef[boardSizeState];
+	
+	// Changes the turnCounter
+	count = 0;
+	turnRef[previousBoardSizeState].textContent = '';
+
+	// remove square layout and background of previous game
+	// add square layout and background for next game
+	removeSquareLayout.call(squareRef[previousBoardSizeState], previousBoardSizeLayout);
+	removeSquareCover.call(squareRef[previousBoardSizeState], previousBoardSizeLayout);
+	turnRefLayout[previousBoardSizeState].classList.remove(`${previousBoardSizeState}TurnLayout`);
+	addSquareLayout.call(squareRef[this.textContent.toLowerCase()], `${boardSizeState}Layout`);
+	addSquareCover.call(squareRef[this.textContent.toLowerCase()], `${boardSizeState}Layout`);
+	turnRefLayout[boardSizeState].classList.add(`${boardSizeState}TurnLayout`);
+
+
+	// set colors for game and matching rules
+	colorSquare();
+	colorMatch();
+
+	// set variables for next board size change
+	previousBoardSizeState = this.textContent.toLowerCase();
+	previousBoardSizeLayout = `${boardSizeState}Layout`;
 }
 
 function addSquareLayout(layout) {
-	for (var i = 0; i < this.length; i++) {
-		this[i].classList.add(layout)
-	}
+	this.forEach((val) => {
+		val.classList.add(layout)
+	})
 }
-
 function removeSquareLayout(layout) {
-	for (var i = 0; i < this.length; i++) {
-		this[i].classList.remove(layout)
-	}
+	this.forEach((val) => {
+		val.classList.remove(layout)
+	})
 }
 
-function removeSquareLayoutAll() {
-	removeSquareLayout.call(squareSmall, "squareSmLayout");
-	removeSquareLayout.call(squareMedium, "squareMdLayout");
-	removeSquareLayout.call(squareLarge, "squareLgLayout");
+function addSquareCover() {
+	this.forEach((val) => {
+		val.classList.add('squareCover');
+	})
 }
-
+function removeSquareCover() {
+	this.forEach((val) => {
+		val.classList.remove('squareCover');
+	})
+}
 // ***********************************************************
 
-
-
-
-// add and removes background texture from squares
-// ***********************************************************
-
-function addSquareBackground() {
-	for (var i = 0; i < this.length; i++) {
-		this[i].classList.add('squareBackground');
-	}
-}
-
-function removeSquareBackground() {
-	for (var i = 0; i < this.length; i++) {
-		this[i].classList.remove('squareBackground');
-	}
-}
-
-function removeSquareBackgroundAll() {
-	removeSquareBackground.call(squareSmall);
-	removeSquareBackground.call(squareLarge);
-	removeSquareBackground.call(squareMedium);
-}
-
-// ***********************************************************
-
-
-
-
-// colors all squares in game
-// ***********************************************************
 
 function colorSquare() {
-	colorGenerator();
+	colorGen();
 	colorAssign();
 }
 
+// generates all colors to be used in the game
+// ***********************************************************
+var arrColorTemp = [];
+var colorGap = 200;		// if set to 250, colorGen may iterate 100's of times on large, hard.
+var colorDiff = [];
+var colorDiffarr = [];
 
+// randomly creates colors that are different by a distinguishable amount.
+function colorGen() {
+	// set arrColor[0] to background color so game colors can all be seen
+	arrColor = [[23, 23, 23]];
 
-function colorGenerator() { 			// generates colorNum semi-random colors
-	var arrR = numberArrayGenerator();
-	var arrG = numberArrayGenerator();
-	var arrB = numberArrayGenerator();
-	for(i = 0; i < colorNum; i++){
-		var r = arrR[Math.floor(Math.random() * arrR.length)]
-		arrR.splice(arrR.indexOf(r), 1);
-		var g = arrG[Math.floor(Math.random() * arrG.length)]
-		arrG.splice(arrG.indexOf(r), 1);
-		var b = arrB[Math.floor(Math.random() * arrB.length)]
-		arrB.splice(arrB.indexOf(r), 1);
-		randomColorArr.push("rgb(" + r + ", " + g + ", " + b + ")");
+	// Loop until obtain enough colors to populate game,
+	// possible infinite loop based on value of colorNum and colorGap.
+	// arrColor.length - 1 required as will remove arrColor[0] after game colors selected.
+	for (var i = 0; arrColor.length - 1 < colorNum; i) {
+
+		var r = Math.floor(Math.random() * 255);
+		var g = Math.floor(Math.random() * 255);
+		var b = Math.floor(Math.random() * 255);
+		arrColorTemp.push(r, g, b);
+
+		// find numerical difference between new random color and all selected colors
+		arrColor.forEach((arr) => {
+			for (var i = 0; i < 3; i++) {
+				colorDiff.push(Math.abs(arrColorTemp[i] - arr[i]))
+			}
+			colorDiffarr.push(colorDiff[0] + colorDiff[1] + colorDiff[2]);
+			colorDiff = [];
+		})
+		
+		// if numerical difference large enough, add color. Otherwise loop again.
+		if (Math.min.apply(null, colorDiffarr) >= colorGap) {
+			arrColor.push([r, g, b]);
+		}
+		colorDiffarr = [];
+		arrColorTemp = [];
+	}	
+
+	// remove background color from arrColor to leave all game colors.
+	arrColor.splice(0,1);
+	// Once all colors are added, convert number arrays in arrColor into rgb colors.
+	for (var i = 0; i < arrColor.length; i++) {
+		arrColor.splice(i, 1, `rgb(${arrColor[i][0]}, ${arrColor[i][1]}, ${arrColor[i][2]})`);
 	}
 }
-
-function numberArrayGenerator() {
-	var colorGap = 255 / colorNum;
-	var arr = [];
-	for(i = 1; i <= colorNum; i++) {
-		var r = Math.floor(Math.random() * colorGap + colorGap * (i-1));
-		arr.push(r);
-	}
-	return arr;
-}
-
 // ***********************************************************
 
 
+// assigns all colors to squares
+// ***********************************************************
 
-
+/*
+Assigns colors to every square in game
+such that every square has a pair color
+and every color is represented
+*/
 function colorAssign() {
-	var arr1 = squareRef[boardSizeState];					// initially all squares in the game. later, the only squares which haven't been colored
-	arrUncoloredSquare = [];								//
-	arrUncoloredSquare = Array.prototype.slice.call(squareRef[boardSizeState]);	//
-	arrColorMatch = [];										// 
-	var colorPairs = squareNum / 2; 						// can i replace colorNumRef[boardSizeState][difficultyState] with colorNum?? 
+	arrUncoloredSquare = Array.prototype.slice.call(squareRef[boardSizeState]);
+	arrColorMatch = [];
 	var maxColor = [];
 	indexSquare = 0; 		// index to assign color to random square
 	indexSquareMatch = 0;		// index to assign color to 2nd random square, that is not same as first random square (pair)
 	indexColor = 0;			// index for random color selection
-	arr = [];
+	unmatchedSquareArr = [];
+
+	// create an array number for each square in the game 
 	for(var i = 0; i < arrUncoloredSquare.length; i++) {
-		arr.push(i);								// 0-31 array
+		unmatchedSquareArr.push(i);
 	}
 
+	// randomly selects two (different) unmatched squares that will be colored the same
 	indexSquareSetter();
-	for (var j = 0; arrColorMatch.length < colorPairs; j++) {
+
+
+	// loop until the number of color matches equals half the number of squares (number of pairs required).
+	for (var j = 0; arrColorMatch.length < squareNum / 2; j++) {
+
+		// selects random color from arrColor
 		indexColorSetter();
-		var count = 0;		// number of times color has been matched before (maxPairNum)																// counts number of times color has already been paired
-		for(var i = 0; i < arrColorMatch.length; i++) {
-			if(arrColorMatch[i] === randomColorArr[indexColor]) {
-				count++;
-			}
-		}
+		
+		// checks how many times color has been paired before
+		// assigns value to count variable
+		colorMatchChecker();
+
+		// sets logic for maximum number of color pairings
 		maxNum();
-		if(count < maxPairNum - 1) {
+
+		// if count is smaller than maxPairNum by 2 or more
+		// set square color of pair (indexSquare and indexSquareMatch)
+		// AND 
+		if(colorMatches < maxPairNum - 1) {
 			setBackgroundColor();
 			indexSquareSetter();
-		} else if (count === maxPairNum - 1 && maxColor.length < maxColorNum){
+
+		// if count is one less than maxPairNum AND 
+		// set square color of pair (indexSquare and indexSquareMatch)
+		// AND remove color from arrColor
+		// because after this logic the color will have been matched maxPairNum times 
+		} else if (colorMatches === maxPairNum - 1 && maxColor.length < maxColorNum){
 			setBackgroundColor();
-			maxColor.push(randomColorArr.splice(indexColor, 1));
+			maxColor.push(arrColor.splice(indexColor, 1));
 			indexSquareSetter();
-		} else {} 
+		}
+	}
+}
+
+function colorMatchChecker() {
+	colorMatches = 0;
+	for(var i = 0; i < arrColorMatch.length; i++) {
+		if(arrColorMatch[i] === arrColor[indexColor]) {
+			colorMatches++;
+		}
 	}
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// sets indexColor to random index of randomColorArr
+// sets indexColor to random index of arrColor
 // sets indexSquare and indexSquareMatch to non-equal random index of arrUncoloredSquare
-
 function indexColorSetter() {
-	indexColor = Math.floor(Math.random() * randomColorArr.length);
+	indexColor = Math.floor(Math.random() * arrColor.length);
 }
 
+// creates a different number for indexSquare and indexSquareMatch
+// removes both indexes from arr
+// randomly selects two (different) unmatched squares that will be colored the same
 function indexSquareSetter() {
+	var num = Math.floor(Math.random() * unmatchedSquareArr.length);
+	indexSquare = unmatchedSquareArr[num];
+	unmatchedSquareArr.splice(unmatchedSquareArr.indexOf(indexSquare), 1);
 
-	var a = Math.floor(Math.random() * arr.length);	// random number between 0 - 31
-	indexSquare = arr[a];						// set indexSquare to the random number
-	arr.splice(arr.indexOf(indexSquare), 1);
-
-	var b = 0;								// remove that number from array
-	b = Math.floor(Math.random() * arr.length);
-	indexSquareMatch = arr[b];
-	arr.splice(arr.indexOf(indexSquareMatch), 1);
-
+	num = Math.floor(Math.random() * unmatchedSquareArr.length);
+	indexSquareMatch = unmatchedSquareArr[num];
+	unmatchedSquareArr.splice(unmatchedSquareArr.indexOf(indexSquareMatch), 1);
 }
 
-
+// sets background color of matched pair
+// adds color to arrColorMatch
 function setBackgroundColor() {
-	arrUncoloredSquare[indexSquare].style.backgroundColor = randomColorArr[indexColor];		// color square[index]
-	arrUncoloredSquare[indexSquareMatch].style.backgroundColor = randomColorArr[indexColor];	// color square[index1]
-	arrColorMatch.push(randomColorArr[indexColor]);
+	arrUncoloredSquare[indexSquare].style.backgroundColor = arrColor[indexColor];		// color square[index]
+	arrUncoloredSquare[indexSquareMatch].style.backgroundColor = arrColor[indexColor];	// color square[index1]
+	arrColorMatch.push(arrColor[indexColor]);
 }
 
 
@@ -279,3 +258,93 @@ function maxNum() {
 		maxColorNum = colorNum;
 	}
 }
+
+
+
+// if squareSelected and arrMatch are not set as global variables
+// there is an issue with the settimeout function
+function colorMatch() {
+	squareSelected = false;
+	arrMatch = [];
+	countMatch = 0;
+	// for every square in the game listen for a click
+	for (i = 0; i < boardSizeRef[boardSizeState]; i++) {
+		squareRef[boardSizeState][i].addEventListener('click', function(){
+			
+			// this is the first color in the match
+			if (squareSelected === false								// a square hasn't been selected
+				&& arrMatch.length === 0 								// 0 squares have been selected. This prevents a bug from fast clicking as squareSelected can be toggled back to false by this method.
+				&& this.style.backgroundColor.slice(0,4) !== 'rgba') {	// the background color of this square is not the deactivated color - this has a small potential for bugs if this color is initially selected as a square color
+
+				this.classList.remove('squareCover');
+				arrMatch.push(this);
+				squareSelected = !squareSelected;
+
+			// a match is selected	
+			} else if (arrMatch.length === 1										// 1 square has previously been selected
+				&& this !== arrMatch[0] 											// that square is different to this square
+				&& this.style.backgroundColor === arrMatch[0].style.backgroundColor // the background color of that square and this square ARE the same
+				&& this.style.backgroundColor.slice(0, 4) !== 'rgba') {				// the background color of this square is not transparent
+				
+				this.classList.remove('squareCover');
+				arrMatch.push(this);
+				
+				// this code runs when the player matches the last two colors
+				if (countMatch === squareNum - 2) {
+					
+					// changes the transparent code to opaque after a certain time
+					setTimeout(() => {
+						squareRef[boardSizeState].forEach((square) => {
+							square.style.backgroundColor = `${square.style.backgroundColor.slice(0, -4)})`;
+						})
+						turnRef[boardSizeState].textContent = '!!';
+					}, 650);
+
+					// increases the turn count before being replaced by the message in setTimeout
+					count++;
+					turnRef[boardSizeState].textContent = count;
+					return;
+				}
+				// delays the fadeout of square from game
+				setTimeout(() => {
+					arrMatch.forEach((square) => {
+						square.style.backgroundColor = `${square.style.backgroundColor.slice(0,-1)}, 0)`;
+						countMatch++;
+					});
+
+					// due to the delay, this prevents the if statement getting triggered
+					// immediately after this else if code is completed
+					arrMatch = [];
+					squareSelected = !squareSelected;
+				}, 650);
+				count++;
+				turnRef[boardSizeState].textContent = count;
+
+			// a match is not selected
+			} else if (arrMatch.length === 1										// 1 square has previously been selected
+				&& this !== arrMatch[0]												// that square is different to this square
+				&& this.style.backgroundColor !== arrMatch[0].style.backgroundColor // the background color of that square and this square ARE NOT the same
+				&& this.style.backgroundColor.slice(0,4) !== 'rgba') {				// the background color of this square is not transparent
+
+				this.classList.remove('squareCover');
+				arrMatch.push(this);
+				setTimeout(() => {
+					arrMatch.forEach((square) => {
+						square.classList.add('squareCover');
+					});
+					arrMatch = [];
+					squareSelected = !squareSelected;
+				}, 1000);
+				count++;
+				turnRef[boardSizeState].textContent = count;
+			}
+		})
+	}
+}
+
+// function match() {
+// 	arrMatch.length === 1												// 1 square has previously been selected
+// 	&& this !== arrMatch[0]												// that square is different to this square
+// 	&& this.style.backgroundColor !== arrMatch[0].style.backgroundColor // the background color of that square and this square ARE NOT the same
+// 	&& this.style.backgroundColor.slice(0,4) !== 'rgba'					// the background color of this square is not transparent
+// }

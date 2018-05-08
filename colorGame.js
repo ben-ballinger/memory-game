@@ -1,142 +1,109 @@
 
-// DOM Manipulators
-// ********************************************************
+/*-----DOM MANIPULATORS-----*/
 
-var squareSmall = document.querySelectorAll(".small");
-var squareMedium = document.querySelectorAll(".medium");
-var squareLarge = document.querySelectorAll(".large");
+/*-----in game squares-----*/
+var squareSmall = document.querySelectorAll('.small');
+var squareMedium = document.querySelectorAll('.medium');
+var squareLarge = document.querySelectorAll('.large');
 
+/*-----turn counter controllers-----*/
+var smallTurnLayout = document.querySelector('#smallTurnLayout');
+var mediumTurnLayout = document.querySelector('#mediumTurnLayout');
+var largeTurnLayout = document.querySelector('#largeTurnLayout');
 
-var newGame = document.querySelector("#newGame");
-var turn = document.querySelector("#turn");
+var smallTurn = document.querySelector('#smallTurnSingle');
+var mediumTurn = document.querySelector('#mediumTurnSingle');
+var largeTurn = document.querySelector('#largeTurnSingle');
 
-var easy = document.querySelector("#easy");
-var medium = document.querySelector("#medium");
-var hard = document.querySelector("#hard");
+/*-----toolbar buttons-----*/
+var newGame = document.querySelector('#newGame');
 
-var small = document.querySelector("#small");
-var moderate = document.querySelector("#moderate");
-var large = document.querySelector("#large");
+var easy = document.querySelector('#easy');
+var medium = document.querySelector('#medium');
+var hard = document.querySelector('#hard');
 
-// ********************************************************
+var small = document.querySelector('#small');
+var moderate = document.querySelector('#moderate');
+var large = document.querySelector('#large');
 
+/*-----VARIABLE DEFINITIONS-----*/
+/*-----STATE ACCESS OBJECTS-----*/
 
-// variable definitions
-// ********************************************************
-var randomColorArr = [];
-
-// automate these variables with init()
-var boardSizeState = "small";
-var difficultyState = "easy";
- 
+/*-----number of colors in game-----*/
 var colorNumRef = {
 	small: {
 		easy: 2,
-		moderate: 4,
-		hard: 6
+		moderate: 3,
+		hard: 4
 	},
 	medium: {
-		easy: 4,
-		moderate: 6,
-		hard: 8
+		easy: 3,
+		moderate: 4,
+		hard: 5
 	},
 	large: {
-		easy: 6,
-		moderate: 9,
-		hard: 12
+		easy: 4,
+		moderate: 5,
+		hard: 6
 	}
 }
-
+/*-----number of squares in game-----*/
 var boardSizeRef = {
-	small: 12,
+	small: 8,
 	medium: 24,
-	large: 36
+	large: 48
 };
 
+/*-----squares which are in current game-----*/
 var squareRef = {
 	small: squareSmall,
 	medium: squareMedium,
 	large: squareLarge
 };
 
-var colorNum = colorNumRef[boardSizeState][difficultyState];
-var squareNum = boardSizeRef[boardSizeState];
-var count = 0;
-// ********************************************************
+/*-----access turn counter controllers-----*/
+var turnRefLayout = {
+	small: smallTurnLayout,
+	medium: mediumTurnLayout,
+	large: largeTurnLayout
+}
 
-// Board initialisation - set up easy board size
-// ********************************************************
-// I will want to change this to an init()
-// That way I can use the init() function for the newGame button
-
-addSquareLayout.call(squareSmall, "squareSmLayout");
-// addSquareBackground.call(squareSmall);
-
-
-// ********************************************************
-
-
-
-
-
-boardSizeChange();	// change board size when selection
-difficultyChange();	// change difficulty when selection
-
-colorSquare();		// colors all squares in game
-colorMatch();
-
-
-// if squareSelected and arrMatch are not set as global variables
-// there is an issue with the settimeout function
-function colorMatch() {
-	squareSelected = false;
-	arrMatch = [];
-	for (i = 0; i < boardSizeRef[boardSizeState]; i++) {
-		squareRef[boardSizeState][i].addEventListener("click", function(){
-			if (squareSelected === false && arrMatch.length === 0 && this.style.backgroundColor !== 'rgb(35, 35, 35)') {
-				this.classList.remove('squareBackground');
-				arrMatch.push(this);
-				squareSelected = !squareSelected;
-			} else if (squareSelected === true && arrMatch.length === 1 && this !== arrMatch[0] && this.style.backgroundColor === arrMatch[0].style.backgroundColor) {
-				this.classList.remove('squareBackground');
-				arrMatch.push(this);
-				setTimeout(() => {
-					arrMatch.forEach((square) => {
-						square.style.backgroundColor = 'rgb(35, 35, 35)';
-					});
-					arrMatch = [];
-					squareSelected = !squareSelected;
-				}, 650);
-				count++;
-				turn.textContent = count;
-			} else if (squareSelected === true && arrMatch.length === 1 && this !== arrMatch[0] && this.style.backgroundColor !== arrMatch[0].style.backgroundColor) {
-				this.classList.remove('squareBackground');
-				arrMatch.push(this);
-				setTimeout(() => {
-					arrMatch.forEach((square) => {
-						square.classList.add('squareBackground');
-					});
-					arrMatch = [];
-					squareSelected = !squareSelected;
-				}, 1000);
-				count++;
-				turn.textContent = count;
-			}
-		})
-	}
+var turnRef = {
+	small: smallTurn,
+	medium: mediumTurn,
+	large: largeTurn
 }
 
 
+var arrColor = [];
 
+var boardSizeState = 'small';
+var previousBoardSizeState;
+var previousBoardSizeLayout;
 
-newGame.addEventListener("click", function(){
-	alert("hello");
-})
+var difficultyState = 'easy';
 
+var colorNum = colorNumRef[boardSizeState][difficultyState];
+var squareNum = boardSizeRef[boardSizeState];
+var count = 0;
 
+/*-----CODE TO RUN GAME-----*/
+init();
 
+/*-----event listeners-----*/
 
+/*-----change difficulty-----*/
+easy.addEventListener('click', difficultyChange)
+moderate.addEventListener('click', difficultyChange)
+hard.addEventListener('click', difficultyChange)
 
+/*-----change board size-----*/
+small.addEventListener('click', boardSizeChange)
+medium.addEventListener('click', boardSizeChange)
+large.addEventListener('click', boardSizeChange)
+
+/*-----start a new game-----*/
+newGame.addEventListener('click', reinit)
 
 
 

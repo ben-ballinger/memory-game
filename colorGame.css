@@ -2,40 +2,83 @@ body {
 	margin: 70px 0px 0px 0px;
 	background: #232323;
 }
-/*****************************************************/
-.containerBottom {
-	max-width: 600px;
+
+/*-----SECTION-GAME-----*/
+
+.section-game {
+	max-width: 500px;
 	margin: 0 auto;
 }
 
-.small {
+.smallLayout,
+.smallTurnLayout,
+.mediumLayout,
+.mediumTurnLayout,
+.largeLayout,
+.largeTurnLayout {
+	border-radius: 15%;
+	float: left;
+	position: relative;
+}
+
+.smallLayout,
+.smallTurnLayout {
 	width: 30%;
 	padding-bottom: 30%;
 	margin: 1.65%;
-	background-color: blue;
-	border-radius: 15%;
-	float: left;
 }
 
-.squareMdLayout {
-	width: 22.5%;
-	padding-bottom: 22.5%;
-	margin: 1.2375%;
-	background-color: blue;
-	border-radius: 15%;
-	float: left;
+.mediumLayout,
+.mediumTurnLayout {
+	width: 18%;
+	padding-bottom: 18%;
+	margin: 0.99%;
 }
 
-.squareLgLayout {
-	width: 15%;
-	padding-bottom: 15%;
-	margin: 0.825%;
-	background-color: blue;
-	border-radius: 15%;
-	float: left;
+.largeLayout,
+.largeTurnLayout {
+	width: 12.856%;
+	padding-bottom: 12.856%;
+	margin: 0.707%;
 }
 
-.squareBackground {
-	background: url("background-img.jpg");
+#smallTurnSingle,
+#mediumTurnSingle, 
+#largeTurnSingle {
+	position: absolute;
+	color: #fff;
 }
-/*****************************************************/
+
+#smallTurnSingle {
+	font-size: 150px;
+	top: -30px;
+	left: 35px;
+}
+
+/*#smallTurnDouble {
+	font-size: 150px;
+	top: -15px;
+}
+
+#smallTurnTriple {
+	font-size: 150px;
+	top: -15px;
+	left: 47px;
+}*/
+
+#mediumTurnSingle {
+	font-size: 100px;
+	top: -25px;
+	left: 18px;
+}
+
+#largeTurnSingle {
+	font-size: 70px;
+	top: -16px;
+	left: 12px;
+}
+
+.squareCover {
+	background: url('background-img.jpg');
+	background-size: cover;
+}

@@ -1,0 +1,40 @@
+Additions to memory-game
+
+
+clean up and organise colorGame-functions.js code
+really need to improve my scoping of variables. If I could do this it would massively simplify the code.
+how to use call/bind/apply on a function?? Can I reduce the if conditionals down to a function call?
+
+
+CSS
+----------------------------
+- change winning message
+- Make transitions take time, not instantaneous
+- Improve overall layout / styling of webpage.
+----------------------------
+
+JS
+----------------------------
+- change turn counter css id when counter >= 10. Is there a classList.add analogue for id's?
+- make the game 1 or 2 player.
+- Fix probability.js script to correctly calculate the probabilities for colorGenerator();
+- Integrate probability.js into the colorGame script.
+  This is to ensure settings not changed to enable infinite loop.
+----------------------------
+
+
+Advanced
+----------------------------
+- Store data for turns taken to finish game for all board sizes / difficulties.
+- Display specific chart for each board size / difficulty.
+- Add users data to chart once finished game and report back what percentile they finished in.
+- Calculate and display chart for number of turns in a perfect game.
+  (statistically this will be a distribution).
+----------------------------
+
+
+
+
+
+
+
