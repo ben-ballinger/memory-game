@@ -272,19 +272,14 @@ function colorMatch() {
 		squareRef[boardSizeState][i].addEventListener('click', function(){
 			
 			// this is the first color in the match
-			if (squareSelected === false								// a square hasn't been selected
-				&& arrMatch.length === 0 								// 0 squares have been selected. This prevents a bug from fast clicking as squareSelected can be toggled back to false by this method.
-				&& this.style.backgroundColor.slice(0,4) !== 'rgba') {	// the background color of this square is not the deactivated color - this has a small potential for bugs if this color is initially selected as a square color
+			if (firstSquareSelected.call(this)) {	// the background color of this square is not the deactivated color - this has a small potential for bugs if this color is initially selected as a square color
 
 				this.classList.remove('squareCover');
 				arrMatch.push(this);
 				squareSelected = !squareSelected;
 
 			// a match is selected	
-			} else if (arrMatch.length === 1										// 1 square has previously been selected
-				&& this !== arrMatch[0] 											// that square is different to this square
-				&& this.style.backgroundColor === arrMatch[0].style.backgroundColor // the background color of that square and this square ARE the same
-				&& this.style.backgroundColor.slice(0, 4) !== 'rgba') {				// the background color of this square is not transparent
+			} else if (matchSelected.call(this)) {
 				
 				this.classList.remove('squareCover');
 				arrMatch.push(this);
@@ -321,10 +316,7 @@ function colorMatch() {
 				turnRef[boardSizeState].textContent = count;
 
 			// a match is not selected
-			} else if (arrMatch.length === 1										// 1 square has previously been selected
-				&& this !== arrMatch[0]												// that square is different to this square
-				&& this.style.backgroundColor !== arrMatch[0].style.backgroundColor // the background color of that square and this square ARE NOT the same
-				&& this.style.backgroundColor.slice(0,4) !== 'rgba') {				// the background color of this square is not transparent
+			} else if (noMatchSelected.call(this)) {
 
 				this.classList.remove('squareCover');
 				arrMatch.push(this);
@@ -342,9 +334,34 @@ function colorMatch() {
 	}
 }
 
-// function match() {
-// 	arrMatch.length === 1												// 1 square has previously been selected
-// 	&& this !== arrMatch[0]												// that square is different to this square
-// 	&& this.style.backgroundColor !== arrMatch[0].style.backgroundColor // the background color of that square and this square ARE NOT the same
-// 	&& this.style.backgroundColor.slice(0,4) !== 'rgba'					// the background color of this square is not transparent
-// }
+function firstSquareSelected() {
+	if (squareSelected === false								// a square hasn't been selected
+	&& arrMatch.length === 0 								// 0 squares have been selected. This prevents a bug from fast clicking as squareSelected can be toggled back to false by this method.
+	&& this.style.backgroundColor.slice(0,4) !== 'rgba'
+	) {
+		return true;
+	}
+
+
+}
+
+
+function noMatchSelected() {
+	if (arrMatch.length === 1												// 1 square has previously been selected
+	&& this !== arrMatch[0]												// that square is different to this square
+	&& this.style.backgroundColor !== arrMatch[0].style.backgroundColor // the background color of that square and this square ARE NOT the same
+	&& this.style.backgroundColor.slice(0,4) !== 'rgba'					// the background color of this square is not transparent)
+	) {
+		return true;
+	}
+}
+
+function matchSelected() {
+	if (arrMatch.length === 1												// 1 square has previously been selected
+	&& this !== arrMatch[0]												// that square is different to this square
+	&& this.style.backgroundColor === arrMatch[0].style.backgroundColor // the background color of that square and this square ARE NOT the same
+	&& this.style.backgroundColor.slice(0,4) !== 'rgba'					// the background color of this square is not transparent)
+	) {
+		return true;
+	}
+}
