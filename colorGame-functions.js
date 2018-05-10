@@ -19,8 +19,7 @@ function init() {
 }
 
 function reinit() {
-	count = 0;
-	turnRef[boardSizeState].textContent = '';
+	turnCounterReset();
 	addSquareCover.call(squareRef[boardSizeState]);
 
 	colorSquare();
@@ -30,29 +29,25 @@ function reinit() {
 // event listener functions
 // ***********************************************************
 function difficultyChange() {
-	// change these variables to new difficulty selection
+	// update these variables to new difficulty selection
 	difficultyState = this.textContent.toLowerCase();
 	colorNum = colorNumRef[boardSizeState][difficultyState];
 	addSquareCover.call(squareRef[boardSizeState]);
 
-	// reset turn counter
-	count = 0;
-	turnRef[boardSizeState].textContent = '';
-
-	// set colors for game
+	turnCounterReset();
 	colorSquare();
 }
 
+
+
 function boardSizeChange() {
-	// refresh these variables to use later in function
+	turnCounterReset();
+
+	// update these variables to new board size selection
 	boardSizeState = this.textContent.toLowerCase();
 	colorNum = colorNumRef[boardSizeState][difficultyState];
 	squareNum = boardSizeRef[boardSizeState];
 	
-	// Changes the turnCounter
-	count = 0;
-	turnRef[previousBoardSizeState].textContent = '';
-
 	// remove square layout and background of previous game
 	// add square layout and background for next game
 	removeSquareLayout.call(squareRef[previousBoardSizeState], previousBoardSizeLayout);
@@ -72,9 +67,12 @@ function boardSizeChange() {
 	previousBoardSizeLayout = `${boardSizeState}Layout`;
 }
 
+
+
 function addSquareLayout(layout) {
 	this.forEach((val) => {
 		val.classList.add(layout)
+		// val.classList.add('squareCover');
 	})
 }
 function removeSquareLayout(layout) {
@@ -365,3 +363,7 @@ function colorMatch() {
 	}
 }
 
+function turnCounterReset() {
+	count = 0;
+	turnRef[boardSizeState].textContent = '';
+}
