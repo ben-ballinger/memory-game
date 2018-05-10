@@ -4,7 +4,7 @@ function init() {
 	// allows time for squareCover to render so colors not briefly shown.
 	setTimeout(() => {
 		addSquareLayout.call(squareRef[boardSizeState], `${boardSizeState}Layout`);
-	}, 10);
+	}, 0);
 	addSquareCover.call(squareRef[boardSizeState]);
 
 	//add turn counter to 
@@ -260,108 +260,108 @@ function maxNum() {
 }
 
 
-
-// if squareSelected and arrMatch are not set as global variables
-// there is an issue with the settimeout function
+// Logic behind matching color pairs
 function colorMatch() {
-	squareSelected = false;
-	arrMatch = [];
-	countMatch = 0;
-	// for every square in the game listen for a click
+	var arrMatch = [];
+	var countMatch = 0;
 	for (i = 0; i < boardSizeRef[boardSizeState]; i++) {
 		squareRef[boardSizeState][i].addEventListener('click', function(){
 			
-			// this is the first color in the match
-			if (firstSquareSelected.call(this)) {	// the background color of this square is not the deactivated color - this has a small potential for bugs if this color is initially selected as a square color
+			if (firstSquareSelected.call(this)) {
+				removeSelectedSquareCover.call(this);
 
-				this.classList.remove('squareCover');
-				arrMatch.push(this);
-				squareSelected = !squareSelected;
-
-			// a match is selected	
 			} else if (matchSelected.call(this)) {
-				
-				this.classList.remove('squareCover');
-				arrMatch.push(this);
+				removeSelectedSquareCover.call(this);
+				clearMatchedSquares();
+				countIncrement();
+				countMatch++;
 				
 				// this code runs when the player matches the last two colors
-				if (countMatch === squareNum - 2) {
-					
-					// changes the transparent code to opaque after a certain time
-					setTimeout(() => {
-						squareRef[boardSizeState].forEach((square) => {
-							square.style.backgroundColor = `${square.style.backgroundColor.slice(0, -4)})`;
-						})
-						turnRef[boardSizeState].textContent = '!!';
-					}, 650);
-
-					// increases the turn count before being replaced by the message in setTimeout
-					count++;
-					turnRef[boardSizeState].textContent = count;
-					return;
+				if (countMatch === squareNum / 2) {
+					displayAllSquares();
 				}
-				// delays the fadeout of square from game
-				setTimeout(() => {
-					arrMatch.forEach((square) => {
-						square.style.backgroundColor = `${square.style.backgroundColor.slice(0,-1)}, 0)`;
-						countMatch++;
-					});
 
-					// due to the delay, this prevents the if statement getting triggered
-					// immediately after this else if code is completed
-					arrMatch = [];
-					squareSelected = !squareSelected;
-				}, 650);
-				count++;
-				turnRef[boardSizeState].textContent = count;
-
-			// a match is not selected
 			} else if (noMatchSelected.call(this)) {
-
-				this.classList.remove('squareCover');
-				arrMatch.push(this);
-				setTimeout(() => {
-					arrMatch.forEach((square) => {
-						square.classList.add('squareCover');
-					});
-					arrMatch = [];
-					squareSelected = !squareSelected;
-				}, 1000);
-				count++;
-				turnRef[boardSizeState].textContent = count;
+				removeSelectedSquareCover.call(this);
+				addSelectedSquareCover();
+				countIncrement();
 			}
 		})
 	}
-}
 
-function firstSquareSelected() {
-	if (squareSelected === false								// a square hasn't been selected
-	&& arrMatch.length === 0 								// 0 squares have been selected. This prevents a bug from fast clicking as squareSelected can be toggled back to false by this method.
-	&& this.style.backgroundColor.slice(0,4) !== 'rgba'
-	) {
-		return true;
+	/*---conditional functions---*/
+
+	function firstSquareSelected() {
+		if (arrMatch.length === 0
+		&& this.style.backgroundColor.slice(0,4) !== 'rgba') {
+			return true;
+		}
 	}
 
+	function matchSelected() {
+		if (arrMatch.length === 1											// 1 square has previously been selected
+		&& this !== arrMatch[0]												// that square is different to this square
+		&& this.style.backgroundColor === arrMatch[0].style.backgroundColor // the background color of that square and this square ARE the same
+		&& this.style.backgroundColor.slice(0,4) !== 'rgba'					// the background color of this square is not transparent)
+		) {
+			return true;
+		}
+	}
 
-}
+	function noMatchSelected() {
+		if (arrMatch.length === 1											// 1 square has previously been selected
+		&& this !== arrMatch[0]												// that square is different to this square
+		&& this.style.backgroundColor !== arrMatch[0].style.backgroundColor // the background color of that square and this square ARE NOT the same
+		&& this.style.backgroundColor.slice(0,4) !== 'rgba'					// the background color of this square is not transparent)
+		) {
+			return true;
+		}
+	}
 
+	/*---square cover functions---*/
 
-function noMatchSelected() {
-	if (arrMatch.length === 1												// 1 square has previously been selected
-	&& this !== arrMatch[0]												// that square is different to this square
-	&& this.style.backgroundColor !== arrMatch[0].style.backgroundColor // the background color of that square and this square ARE NOT the same
-	&& this.style.backgroundColor.slice(0,4) !== 'rgba'					// the background color of this square is not transparent)
-	) {
-		return true;
+	function removeSelectedSquareCover() {
+		this.classList.remove('squareCover');
+		arrMatch.push(this);
+	}
+
+	function addSelectedSquareCover() {
+		setTimeout(() => {
+			arrMatch.forEach((square) => {
+				square.classList.add('squareCover');
+			});
+			arrMatch = [];
+		}, 1000);
+	}
+
+	/*---display/clear squares---*/
+
+	function clearMatchedSquares() {
+		// delays the fadeout of square from game
+		setTimeout(() => {
+			arrMatch.forEach((square) => {
+				square.style.backgroundColor = `${square.style.backgroundColor.slice(0,-1)}, 0)`;
+			});
+			arrMatch = [];
+		}, 650);
+	}
+
+	function displayAllSquares() {
+		// changes the transparent code to opaque after a certain time
+		setTimeout(() => {
+			squareRef[boardSizeState].forEach((square) => {
+				square.style.backgroundColor = `${square.style.backgroundColor.slice(0, -4)})`;
+			})
+			turnRef[boardSizeState].textContent = '!!';
+		}, 650);
+		return;
+	}
+
+	/*---counter increment---*/
+
+	function countIncrement() {
+		count++;
+		turnRef[boardSizeState].textContent = count;
 	}
 }
 
-function matchSelected() {
-	if (arrMatch.length === 1												// 1 square has previously been selected
-	&& this !== arrMatch[0]												// that square is different to this square
-	&& this.style.backgroundColor === arrMatch[0].style.backgroundColor // the background color of that square and this square ARE NOT the same
-	&& this.style.backgroundColor.slice(0,4) !== 'rgba'					// the background color of this square is not transparent)
-	) {
-		return true;
-	}
-}
