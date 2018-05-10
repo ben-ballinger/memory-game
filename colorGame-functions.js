@@ -265,6 +265,7 @@ function colorMatch() {
 	for (i = 0; i < boardSizeRef[boardSizeState]; i++) {
 		squareRef[boardSizeState][i].addEventListener('click', function(){
 			
+<<<<<<< HEAD
 			if (firstSquareSelected.call(this)) {
 				removeSelectedSquareCover.call(this);
 
@@ -273,11 +274,53 @@ function colorMatch() {
 				clearMatchedSquares();
 				countIncrement();
 				countMatch++;
+=======
+			// this is the first color in the match
+			if (squareSelected === false								// a square hasn't been selected
+				&& arrMatch.length === 0 								// 0 squares have been selected. This prevents a bug from fast clicking as squareSelected can be toggled back to false by this method.
+				&& this.style.backgroundColor.slice(0,4) !== 'rgba') {	// the background color of this square is not the deactivated color - this has a small potential for bugs if this color is initially selected as a square color
+
+				this.classList.remove('squareCover');
+				arrMatch.push(this);
+				squareSelected = !squareSelected;
+
+			// a match is selected	
+			} else if (arrMatch.length === 1										// 1 square has previously been selected
+				&& this !== arrMatch[0] 											// that square is different to this square
+				&& this.style.backgroundColor === arrMatch[0].style.backgroundColor // the background color of that square and this square ARE the same
+				&& this.style.backgroundColor.slice(0, 4) !== 'rgba') {				// the background color of this square is not transparent
+				
+				this.classList.remove('squareCover');
+				arrMatch.push(this);
+>>>>>>> parent of 82092c9... colorMatch conditionals clean
 				
 				// this code runs when the player matches the last two colors
 				if (countMatch === squareNum / 2) {
 					displayAllSquares();
 				}
+<<<<<<< HEAD
+=======
+				// delays the fadeout of square from game
+				setTimeout(() => {
+					arrMatch.forEach((square) => {
+						square.style.backgroundColor = `${square.style.backgroundColor.slice(0,-1)}, 0)`;
+						countMatch++;
+					});
+
+					// due to the delay, this prevents the if statement getting triggered
+					// immediately after this else if code is completed
+					arrMatch = [];
+					squareSelected = !squareSelected;
+				}, 650);
+				count++;
+				turnRef[boardSizeState].textContent = count;
+
+			// a match is not selected
+			} else if (arrMatch.length === 1										// 1 square has previously been selected
+				&& this !== arrMatch[0]												// that square is different to this square
+				&& this.style.backgroundColor !== arrMatch[0].style.backgroundColor // the background color of that square and this square ARE NOT the same
+				&& this.style.backgroundColor.slice(0,4) !== 'rgba') {				// the background color of this square is not transparent
+>>>>>>> parent of 82092c9... colorMatch conditionals clean
 
 			} else if (noMatchSelected.call(this)) {
 				removeSelectedSquareCover.call(this);
@@ -287,6 +330,7 @@ function colorMatch() {
 		})
 	}
 
+<<<<<<< HEAD
 	/*---conditional functions---*/
 
 	function firstSquareSelected() {
@@ -367,3 +411,11 @@ function turnCounterReset() {
 	count = 0;
 	turnRef[boardSizeState].textContent = '';
 }
+=======
+// function match() {
+// 	arrMatch.length === 1												// 1 square has previously been selected
+// 	&& this !== arrMatch[0]												// that square is different to this square
+// 	&& this.style.backgroundColor !== arrMatch[0].style.backgroundColor // the background color of that square and this square ARE NOT the same
+// 	&& this.style.backgroundColor.slice(0,4) !== 'rgba'					// the background color of this square is not transparent
+// }
+>>>>>>> parent of 82092c9... colorMatch conditionals clean
